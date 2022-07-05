@@ -43,11 +43,13 @@ template<typename T> inline void read(T &x) {
 
 int n,a[N],b[N],inv2,c[N],inv4;
 
-inline int ksm(int a,int b,int mod){int res=1;while(b&1){res=1ll*res*a%mod;a=1ll*a*a%mod;b>>=1;}return res;}
+inline int ksm(int a,int b,int mod){int res=1;while(b){if(b&1)res=1ll*res*a%mod;a=1ll*a*a%mod;b>>=1;}return res;}
 inline int inv(int a){return ksm(a,mod-2,mod);}
 inline P Calc(int a,int b){
     int x=1ll*((a+b)%mod)*inv4%mod;
-    int y=(a-x)%mod;return mp(x,y);
+    int y=(a-x)%mod;
+    // x=(x+mod)%mod;y=(y+mod)%mod;
+    return mp(x,y);
 }
 inline void FWT(int *f,int n,int op){
     for(int i=2;i<=n;i<<=1)
@@ -70,16 +72,18 @@ int main(){
     // assert(freopen("my.out","w",stdout));
     inv2=ksm(2,mod-2,mod);inv4=inv(4);
     read(n);rep(i,1,n) read(a[i]);
+    int nn=n;
     rep(i,1,n) b[a[i]]+=2;b[0]+=n;
-    int m=4;n=1;while(n<m) n<<=1;
+    int m=1000000;n=1;while(n<m) n<<=1;
     FWT(b,n,1);
-    rep(i,0,n-1) printf("%d ",b[i]);puts("");
+    // rep(i,0,n-1) printf("%d ",b[i]);puts("");
     rep(i,0,n-1){
-        P now=Calc(n,b[i]);
+        P now=Calc(nn,b[i]);
+        // printf("now.fi=%d now.se=%d\n",now.fi,now.se);
         c[i]=1ll*ksm(3,now.fi,mod)*sgn(now.se)%mod;
     }
     FWT(c,n,0);
     c[0]--;
-    printf("%d\n",c[0]);
+    printf("%d\n",(c[0]+mod)%mod);
     return 0;
 }
